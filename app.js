@@ -11,7 +11,7 @@ app.use(morgan('dev'));
 
 // Basic route
 app.get('/', (req, res) => {
-  res.send('Restaurant API is running.');
+  res.send('Restaurant API is running!');
 });
 
 module.exports = app;
