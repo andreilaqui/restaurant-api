@@ -6,7 +6,7 @@ let db;
 async function connectDB() {
   if (!db) {
     await client.connect();
-    db = client.db(); // uses the default DB from URI
+    db = client.db();
     console.log('Connected to MongoDB');
   }
   return db;
