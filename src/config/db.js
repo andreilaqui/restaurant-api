@@ -1,15 +1,13 @@
-const { MongoClient } = require('mongodb');
-
-const client = new MongoClient(process.env.MONGODB_URI);
-let db;
+const mongoose = require('mongoose');   // wrapper around MongoDB - so I can use schema, models, helpers
 
 async function connectDB() {
-  if (!db) {
-    await client.connect();
-    db = client.db();
-    console.log('Connected to MongoDB');
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('Connected to MongoDB with Mongoose');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
   }
-  return db;
 }
 
 module.exports = { connectDB };
