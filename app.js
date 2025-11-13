@@ -2,6 +2,8 @@
 const express = require('express');     //parse JSON
 const cors = require('cors');           //allow frontend access
 const morgan = require('morgan');       //log request in terminal
+const connectDB = require('./src/config/db'); 
+
 const app = express(); //heart of the backend
 
 // middleware
