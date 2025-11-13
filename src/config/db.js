@@ -6,7 +6,7 @@ async function connectDB() {
     console.log('Connected to MongoDB with Mongoose');
   } catch (err) {
     console.log(process.env.MONGODB_URI);
-    console.error('MongoDB connection error:', err);
+    console.error('MongoDB connection error! Error message:', err);
     process.exit(1);
   }
 }
