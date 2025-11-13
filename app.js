@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Connect to DB
+// Connect to DB - Vercel uses serverless function so I need to make sure there is a connection
 connectDB();
 
 
