@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');   // wrapper around MongoDB - so I can use schema, models, helpers
 
 async function connectDB() {
+  console.log("Connecting with URI:", process.env.MONGODB_URI);
   try {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB with Mongoose');
