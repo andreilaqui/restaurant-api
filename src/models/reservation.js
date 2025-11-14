@@ -8,7 +8,7 @@ const reservationSchema = new mongoose.Schema({
     eventType: {
         type: String,
         enum: ["none", "birthday", "anniversary", "business"],
-        default: none
+        default: "none"
     }
 }, { timestamps: true });
 
