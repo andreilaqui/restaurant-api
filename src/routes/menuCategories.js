@@ -12,7 +12,6 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  console.log("Incoming body:", req.body);
   try {
     const category = new MenuCategory(req.body);
     await category.save();

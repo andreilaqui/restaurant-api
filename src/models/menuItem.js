@@ -7,8 +7,8 @@ const menuItemSchema = new mongoose.Schema({
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuCategory', required: true },
   price: { type: Number, required: true },
   image: String,
-  availability: { type: Boolean, default: true }
-  
+  availability: { type: Boolean, default: true },
+  tags: [{ type: String, enum: ["vegetarian", "vegan", "spicy", "bestseller", "new"] }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('MenuItem', menuItemSchema);
