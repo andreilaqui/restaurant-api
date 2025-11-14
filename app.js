@@ -21,7 +21,7 @@ const menuItemsRouter = require('./src/routes/menuItems');
 
 // mount routers
 app.use('/categories', menuCategoriesRouter);
-app.use('/items', menuItemsRouter);
+app.use('/menuitems', menuItemsRouter);
 
 
 
