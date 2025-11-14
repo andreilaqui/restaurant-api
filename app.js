@@ -20,7 +20,7 @@ const menuCategoriesRouter = require('./src/routes/menuCategories');
 const menuItemsRouter = require('./src/routes/menuItems');
 
 // mount routers
-app.use('/categories', menuCategoriesRouter);
+app.use('/menucategories', menuCategoriesRouter);
 app.use('/menuitems', menuItemsRouter);
 
 
