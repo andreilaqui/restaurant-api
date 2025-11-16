@@ -19,7 +19,7 @@ connectDB();
 const menuCategoriesRouter = require('./src/routes/menuCategoryRoute');
 const menuItemsRouter = require('./src/routes/menuItemRoute');
 const reservationRouter = require('./src/routes/reservationRoute');
-const orderRouter = require('.src/routes/orderRoute');
+const orderRouter = require('./src/routes/orderRoute');
 
 // mount routers
 app.use('/menucategories', menuCategoriesRouter);

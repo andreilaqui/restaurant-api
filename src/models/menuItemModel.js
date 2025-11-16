@@ -6,7 +6,7 @@ const menuItemSchema = new mongoose.Schema({
   description: String,
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuCategory', required: true },
   price: { type: Number, required: true },
-  image: String,
+  image: { url: String, publicId: String },
   availability: { type: Boolean, default: true },
   tags: [{ type: String, enum: ["vegetarian", "vegan", "spicy", "bestseller", "new"] }]
 }, { timestamps: true });
