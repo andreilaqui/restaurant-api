@@ -5,9 +5,9 @@ const Reservation = require('../models/reservationModel');
 //C-reate
 router.post('/', async (req, res) => {
   try {
-    const reservation = new Reservation(req.body);
-    await reservation.save();
-    res.status(201).json(reservation);
+    const newReservation = new Reservation(req.body);
+    const savedReservation = await newReservation.save();
+    res.status(201).json(savedReservation);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
