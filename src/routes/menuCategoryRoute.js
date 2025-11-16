@@ -6,9 +6,9 @@ const MenuItem = require('../models/menuItemModel'); // because I want to check 
 //C-reate
 router.post('/', async (req, res) => {
   try {
-    const category = new MenuCategory(req.body);
-    await category.save();
-    res.status(201).json(category);
+    const newCategory = new MenuCategory(req.body);
+    const savedCatetory = await newCategory.save();
+    res.status(201).json(savedCatetory);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
