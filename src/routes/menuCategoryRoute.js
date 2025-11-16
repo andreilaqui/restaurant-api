@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const MenuCategory = require('../models/MenuCategoryModel');
+const MenuCategory = require('../models/menuCategoryModel');
 const MenuItem = require('../models/menuItemModel'); // because I want to check if any item is using a category before it's deleted
 
 //C-reate
