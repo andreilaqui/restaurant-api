@@ -5,7 +5,7 @@ const upload = multer({ dest: 'uploads/' }); // temp storage
 const { uploadImage, deleteImage } = require('../services/imageService');
 
 // upload image
-router.post('/upload', upload.single('image'), async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
   try {
     const result = await uploadImage(req.file.path);
     res.status(201).json({ url: result.secure_url, public_id: result.public_id });
@@ -16,7 +16,7 @@ router.post('/upload', upload.single('image'), async (req, res) => {
 });
 
 // delete image by public_id
-router.delete('/delete/:publicId', async (req, res) => {
+router.delete('/:publicId', async (req, res) => {
   try {
     const { publicId } = req.params;
     const result = await deleteImage(publicId);
