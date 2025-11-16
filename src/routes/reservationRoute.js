@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Reservation = require('../models/reservation');
+const Reservation = require('../models/reservationModel');
 
 //C-reate
 router.post('/', async (req, res) => {
@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-//R-ead according to filters provided
+//R-ead according to filters
 router.get('/', async (req, res) => {
   try {
     const {startDate, endDate } = req.query;
