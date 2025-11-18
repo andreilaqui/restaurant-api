@@ -1,17 +1,45 @@
 const express = require('express');
 const router = express.Router();
+
+const multer = require('multer');
+const upload = multer({dest : 'uploads/'})
+const {uploadImage} = require('../services/imageService');
+
 const MenuItem = require('../models/menuItemModel');
 
 //C-reate
-router.post('/', async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const item = new MenuItem(req.body);
+    const { name, slug, description, category, price, availability, tags } = req.body;
+    let imageData = null;
+
+    if (req.file) {
+      const result = await uploadImage(req.file.path);
+      imageData = {
+        url: result.secure_url,
+        publicId: result.public_id
+      };
+    }
+
+    const item = new MenuItem({
+      name,
+      slug,
+      description,
+      category,
+      price,
+      availability,
+      tags,
+      image: imageData
+    });
+
     await item.save();
     res.status(201).json(item);
   } catch (err) {
+    console.error('Menu item creation error:', err.message);
     res.status(400).json({ error: err.message });
   }
 });
+
 
 //R-ead
 router.get('/', async (req, res) => {
