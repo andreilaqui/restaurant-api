@@ -1,10 +1,18 @@
+//libraries
 const express = require('express');
 const router = express.Router();
+
+//middleware
+const { auth, requireAdmin } = require('../middleware/auth');
+
+//schema
 const MenuCategory = require('../models/menuCategoryModel');
 const MenuItem = require('../models/menuItemModel'); // because I want to check if any item is using a category before it's deleted
 
 //C-reate
-router.post('/', async (req, res) => {
+//router.post('/', async (req, res) => {  //old line before auth
+router.post('/', auth, requireAdmin, async (req, res) => {
+
   try {
     const newCategory = new MenuCategory(req.body);
     const savedCatetory = await newCategory.save();
@@ -25,7 +33,9 @@ router.get('/', async (req, res) => {
 });
 
 //U-pdate
-router.patch('/:id', async (req, res) => {
+//router.patch('/:id', async (req, res) => {
+router.patch('/:id', auth, requireAdmin, async (req, res) => {
+
   try {
     const { id } = req.params;
 
@@ -47,7 +57,8 @@ router.patch('/:id', async (req, res) => {
 });
 
 //D-elete
-router.delete('/:id', async (req, res) => {
+//router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 

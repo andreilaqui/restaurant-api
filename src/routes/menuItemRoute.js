@@ -2,10 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const upload = multer({dest : 'uploads/'})
+const upload = multer({ dest: 'uploads/' })
 
 // middleware
-const {uploadImage, deleteImage} = require('../services/imageService');
+const { uploadImage, deleteImage } = require('../services/imageService');
 const { auth, requireAdmin } = require('../middleware/auth');
 
 // schema
