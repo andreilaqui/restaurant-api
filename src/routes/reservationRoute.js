@@ -53,7 +53,7 @@ router.get('/:id', auth, requireAdmin, async (req, res) => {
 //R-ead according to filters
 router.get('/', auth, requireAdmin, async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, eventType, status } = req.query;
     const filter = {};
 
     // Date range filter
@@ -67,6 +67,15 @@ router.get('/', auth, requireAdmin, async (req, res) => {
     } else if (endDate) {
       filter.datetime = { $lte: new Date(endDate) };
     }
+
+    // Event type filter (single or multiple)
+    if (eventType) {
+      const types = Array.isArray(eventType) ? eventType : eventType.split(',');
+      filter.eventType = { $in: types };
+    }
+
+    // Status filter (optional, but useful for admin dashboards)
+    if (status) filter.status = status;
 
     const reservations = await Reservation.find(filter);
     res.json(reservations);
