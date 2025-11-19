@@ -12,11 +12,16 @@ const MenuItem = require('../models/menuItemModel'); // needed for snapshot
 // C-reate
 router.post('/', auth, async (req, res) => {
   try {
+    if (!req.body.items || req.body.items.length === 0) {
+      return res.status(400).json({ error: "Order must contain at least one item" });
+    }
+
     // Build items with snapshot data
     const itemsWithSnapshots = await Promise.all(
       req.body.items.map(async (item) => {
         const menuItem = await MenuItem.findById(item.itemId).populate('category', 'name slug');
         if (!menuItem) throw new Error(`MenuItem not found: ${item.itemId}`);
+        if (!menuItem.availability) throw new Error(`MenuItem not available: ${menuItem.name}`);
 
         return {
           itemId: menuItem._id,
