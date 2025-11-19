@@ -1,14 +1,19 @@
+// libraries
 const express = require('express');
 const router = express.Router();
-
 const multer = require('multer');
 const upload = multer({dest : 'uploads/'})
-const {uploadImage} = require('../services/imageService');
 
+// middleware
+const {uploadImage, deleteImage} = require('../services/imageService');
+const { auth, requireAdmin } = require('../middleware/auth');
+
+// schema
 const MenuItem = require('../models/menuItemModel');
 
 //C-reate
-router.post('/', upload.single('image'), async (req, res) => {
+//router.post('/', upload.single('image'), async (req, res) => { //old line before auth
+router.post('/', auth, requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const { name, slug, description, category, price, availability, tags } = req.body;
     let imageData = null;
@@ -52,7 +57,8 @@ router.get('/', async (req, res) => {
 });
 
 //U-pdate
-router.patch('/:id', async (req, res) => {
+//router.patch('/:id', async (req, res) => {
+router.patch('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -75,22 +81,31 @@ router.patch('/:id', async (req, res) => {
 });
 
 //D-elete
-router.delete('/:id', async (req, res) => {
+//router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
+    const item = await MenuItem.findById(id);
 
-    const deletedItem = await MenuItem.findByIdAndDelete(id);
-
-    if (!deletedItem)
+    if (!item) {
       return res.status(404).json({ message: 'Menu item not found' });
+    }
 
-    res.json({ message: 'Menu item deleted successfully', deletedItem });
+    // Delete Cloudinary image if present
+    if (item.image?.publicId) {
+      const result = await deleteImage(item.image.publicId);
+      if (result.result !== 'ok') {
+        console.warn(`Cloudinary deletion failed for ${item.image.publicId}`);
+      }
+    }
 
+    await item.deleteOne();
+
+    res.json({ message: 'Menu item and image deleted successfully', deletedItem: item });
   } catch (err) {
     console.error('Error deleting menu item:', err.message);
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 module.exports = router;
