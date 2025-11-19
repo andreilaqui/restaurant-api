@@ -8,9 +8,11 @@ const auth = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // { id, role }
     next();
-  } catch {
-    res.status(401).json({ error: 'Invalid token' });
+  }catch (err) {
+    return res.status(401).json({ error: 'Invalid token' });
   }
+
+
 };
 
 const requireAdmin = (req, res, next) => {

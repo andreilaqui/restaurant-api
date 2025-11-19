@@ -1,11 +1,19 @@
+//libraries
 const express = require('express');
 const router = express.Router();
 const Reservation = require('../models/reservationModel');
 
+//middleware
+const { auth, requireAdmin } = require('../middleware/auth');
+
+
 //C-reate
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   try {
-    const newReservation = new Reservation(req.body);
+    const newReservation = new  Reservation({
+                                  ...req.body,
+                                  customerId: req.user.id
+                                });
     const savedReservation = await newReservation.save();
     res.status(201).json(savedReservation);
   } catch (err) {
@@ -13,8 +21,22 @@ router.post('/', async (req, res) => {
   }
 });
 
+//R-ead reservations for logged-in user
+router.get('/my', auth, async (req, res) => {
+  try {
+    const reservations = await Reservation.find({ customerId: req.user.id });
+
+    if (!reservations) 
+      return res.status(404).json({ message: 'Reservation not found' });
+
+    res.json(reservations);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 //R-ead specific ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const reservation = await Reservation.findById(req.params.id)
 
@@ -29,7 +51,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //R-ead according to filters
-router.get('/', async (req, res) => {
+router.get('/', auth, requireAdmin, async (req, res) => {
   try {
     const {startDate, endDate } = req.query;
     const filter = {};
@@ -58,7 +80,8 @@ router.get('/', async (req, res) => {
 
 
 //U-pdate
-router.patch('/:id', async (req, res) => {
+//router.patch('/:id', async (req, res) => {
+router.patch('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -80,7 +103,8 @@ router.patch('/:id', async (req, res) => {
 });
 
 //D-elete
-router.delete('/:id', async (req, res) => {
+//router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
