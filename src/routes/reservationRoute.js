@@ -10,10 +10,10 @@ const { auth, requireAdmin } = require('../middleware/auth');
 //C-reate
 router.post('/', auth, async (req, res) => {
   try {
-    const newReservation = new  Reservation({
-                                  ...req.body,
-                                  customerId: req.user.id
-                                });
+    const newReservation = new Reservation({
+      ...req.body,
+      customerId: req.user.id
+    });
     const savedReservation = await newReservation.save();
     res.status(201).json(savedReservation);
   } catch (err) {
@@ -26,7 +26,7 @@ router.get('/my', auth, async (req, res) => {
   try {
     const reservations = await Reservation.find({ customerId: req.user.id });
 
-    if (!reservations) 
+    if (!reservations)
       return res.status(404).json({ message: 'Reservation not found' });
 
     res.json(reservations);
@@ -40,7 +40,7 @@ router.get('/:id', auth, requireAdmin, async (req, res) => {
   try {
     const reservation = await Reservation.findById(req.params.id)
 
-    if (!reservation) 
+    if (!reservation)
       return res.status(404).json({ message: 'Reservation not found' });
 
     res.json(reservation);
@@ -53,7 +53,7 @@ router.get('/:id', auth, requireAdmin, async (req, res) => {
 //R-ead according to filters
 router.get('/', auth, requireAdmin, async (req, res) => {
   try {
-    const {startDate, endDate } = req.query;
+    const { startDate, endDate } = req.query;
     const filter = {};
 
     // Date range filter
@@ -91,7 +91,7 @@ router.patch('/:id', auth, requireAdmin, async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    if (!updatedReservation) 
+    if (!updatedReservation)
       return res.status(404).json({ message: 'Reservation not found' });
 
     res.json(updatedReservation);

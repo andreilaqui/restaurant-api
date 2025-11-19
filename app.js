@@ -20,7 +20,7 @@ const menuCategoriesRouter = require('./src/routes/menuCategoryRoute');
 const menuItemsRouter = require('./src/routes/menuItemRoute');
 const reservationRouter = require('./src/routes/reservationRoute');
 const orderRouter = require('./src/routes/orderRoute');
-const imageRouter = require('./src/routes/imageRoute')
+//const imageRouter = require('./src/routes/imageRoute')
 
 const authRouter = require('./src/routes/authRoute');
 
@@ -31,7 +31,7 @@ app.use('/menucategories', menuCategoriesRouter);
 app.use('/menuitems', menuItemsRouter);
 app.use('/reservations', reservationRouter);
 app.use('/orders', orderRouter);
-app.use('/images', imageRouter);
+//app.use('/images', imageRouter);
 
 app.use('/auth', authRouter);
 
