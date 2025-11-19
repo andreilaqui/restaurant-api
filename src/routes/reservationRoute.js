@@ -10,6 +10,17 @@ const { auth, requireAdmin } = require('../middleware/auth');
 //C-reate
 router.post('/', auth, async (req, res) => {
   try {
+    const { datetime } = req.body;
+
+    // duplicate prevention
+    const existing = await Reservation.findOne({
+      customerId: req.user.id,
+      datetime
+    });
+    if (existing) {
+      return res.status(400).json({ error: "You already have a reservation at this time" });
+    }
+
     const newReservation = new Reservation({
       ...req.body,
       customerId: req.user.id
