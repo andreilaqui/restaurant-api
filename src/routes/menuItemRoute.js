@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' })
+const upload = multer({ storage: multer.memoryStorage() });
 
 // middleware
 const { uploadImage, deleteImage } = require('../services/imageService');
@@ -12,14 +12,13 @@ const { auth, requireAdmin } = require('../middleware/auth');
 const MenuItem = require('../models/menuItemModel');
 
 //C-reate
-//router.post('/', upload.single('image'), async (req, res) => { //old line before auth
 router.post('/', auth, requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const { name, slug, description, category, price, availability, tags } = req.body;
     let imageData = null;
 
     if (req.file) {
-      const result = await uploadImage(req.file.path);
+      const result = await uploadImage(req.file.buffer);
       imageData = {
         url: result.secure_url,
         publicId: result.public_id
@@ -57,23 +56,29 @@ router.get('/', async (req, res) => {
 });
 
 //U-pdate
-//router.patch('/:id', async (req, res) => {
-router.patch('/:id', auth, requireAdmin, async (req, res) => {
+router.patch('/:id', auth, requireAdmin, upload.single('image'), async (req, res) => {
   try {
-    const { id } = req.params;
+    const item = await MenuItem.findById(req.params.id);
+    if (!item) return res.status(404).json({ message: 'Menu item not found' });
 
-    // Apply only the fields provided in req.body
-    const updatedItem = await MenuItem.findByIdAndUpdate(
-      id,
-      { $set: req.body },   // only update the fields sent
-      { new: true, runValidators: true } // return updated doc, enforce schema rules
-    );
+    // update scalar fields
+    const updatable = ['name', 'slug', 'description', 'category', 'price', 'availability', 'tags'];
+    updatable.forEach(f => {
+      if (req.body[f] !== undefined) item[f] = req.body[f];
+    });
 
-    if (!updatedItem)
-      return res.status(404).json({ message: 'Menu item not found' });
+    // handle new image upload
+    if (req.file) {
+      const result = await uploadImage(req.file.buffer);
+      
+      // replace old image
+      if (item.image?.publicId) await deleteImage(item.image.publicId);  // ?. is an optional chaining operator will return undefined instead of error
 
-    res.json(updatedItem);
+      item.image = { url: result.secure_url, publicId: result.public_id };
+    }
 
+    const updated = await item.save();
+    res.json(updated);
   } catch (err) {
     console.error('Error updating menu item:', err.message);
     res.status(500).json({ message: 'Server error' });
