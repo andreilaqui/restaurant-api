@@ -75,7 +75,7 @@ router.post('/refresh', (req, res) => {
   }
 });
 
-// POST /logout
+// logout
 router.post('/logout', (req, res) => {
   // If using cookies, clear it
   res.clearCookie("refreshToken");
