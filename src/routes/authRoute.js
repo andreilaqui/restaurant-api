@@ -41,82 +41,82 @@ router.post(
   });
 
 // login - this is not CRUD Create but using post to send sensitive data (password))
-router.post('/login', async (req, res) => {
-  try {
-    console.log('Login request body:', req.body);
-
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-
-    if (!user) {
-      console.log('User not found');
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ error: 'Invalid username or password' });
-    }
-
-    // Access token (short-lived)
-    const accessToken = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '30m' }
-    );
-
-    // Refresh token (longer-lived)
-    const refreshToken = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_REFRESH_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    res.json({
-      accessToken,
-      refreshToken,
-      user: { id: user._id, username: user.username, role: user.role }
-    });
-  } catch (err) {
-    res.status(500).json({ error: 'Login failed' });
-  }
-});
 // router.post('/login', async (req, res) => {
 //   try {
 //     console.log('Login request body:', req.body);
 
 //     const { username, password } = req.body;
-//     if (!username || !password) {
-//       return res.status(400).json({ error: 'Missing credentials' });
-//     }
-
 //     const user = await User.findOne({ username });
+
 //     if (!user) {
 //       console.log('User not found');
 //       return res.status(401).json({ error: 'Invalid credentials' });
 //     }
 
-//     const isMatch = await user.comparePassword(password);
-//     if (!isMatch) {
-//       console.log('Password mismatch');
-//       return res.status(401).json({ error: 'Invalid credentials' });
+
+//     if (!user || !(await user.comparePassword(password))) {
+//       return res.status(401).json({ error: 'Invalid username or password' });
 //     }
 
-//     const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-//       expiresIn: '15m',
-//     });
-//     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-//       expiresIn: '7d',
-//     });
+//     // Access token (short-lived)
+//     const accessToken = jwt.sign(
+//       { id: user._id, role: user.role },
+//       process.env.JWT_SECRET,
+//       { expiresIn: '30m' }
+//     );
 
-//     console.log('Tokens generated successfully');
-//     res.status(200).json({ accessToken, refreshToken });
+//     // Refresh token (longer-lived)
+//     const refreshToken = jwt.sign(
+//       { id: user._id, role: user.role },
+//       process.env.JWT_REFRESH_SECRET,
+//       { expiresIn: '7d' }
+//     );
 
+//     res.json({
+//       accessToken,
+//       refreshToken,
+//       user: { id: user._id, username: user.username, role: user.role }
+//     });
 //   } catch (err) {
-//     console.error('Login error:', err.message);
-//     res.status(500).json({ error: 'Server error during login' });
+//     res.status(500).json({ error: 'Login failed' });
 //   }
 // });
+router.post('/login', async (req, res) => {
+  try {
+    console.log('Login request body:', req.body);
+
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Missing credentials' });
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      console.log('User not found');
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      console.log('Password mismatch');
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '15m',
+    });
+    const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '7d',
+    });
+
+    console.log('Tokens generated successfully');
+    res.status(200).json({ accessToken, refreshToken });
+
+  } catch (err) {
+    console.error('Login error:', err.message);
+    res.status(500).json({ error: 'Server error during login' });
+  }
+});
 
 
 // Token refresh, also using POST because of sensitive data
