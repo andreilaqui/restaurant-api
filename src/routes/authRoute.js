@@ -43,8 +43,17 @@ router.post(
 // login - this is not CRUD Create but using post to send sensitive data (password))
 router.post('/login', async (req, res) => {
   try {
+    console.log('Login request body:', req.body);
+
     const { username, password } = req.body;
     const user = await User.findOne({ username });
+
+    if (!user) {
+      console.log('User not found');
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
