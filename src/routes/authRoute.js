@@ -59,19 +59,20 @@ router.post('/login', async (req, res) => {
 
     // Access token (short-lived)
     const accessToken = jwt.sign(
-      { id: user._id, role: user.role, tokenType: "access" },
+      { id: user._id, role: user.role},
       process.env.JWT_SECRET,
       { expiresIn: '30m' }
     );
+    // console.log(accessToken);
 
     // Refresh token (longer-lived)
     const refreshToken = jwt.sign(
-      { id: user._id, role: user.role, tokenType: "refresh"},
+      { id: user._id, role: user.role},
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: '7d' }
     );
-
-    console.log(user);
+    // console.log(refreshToken);
+    
     res.json({
       accessToken,
       refreshToken,
