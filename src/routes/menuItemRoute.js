@@ -79,7 +79,6 @@ router.patch('/:id', auth, requireAdmin, upload.single('image'), async (req, res
 
     const updated = await item.save();
     res.json(updated);
-    alert('Menu item updated successfully!');
   } catch (err) {
     console.error('Error updating menu item:', err.message);
     res.status(500).json({ message: 'Server error' });
