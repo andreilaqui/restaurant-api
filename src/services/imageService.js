@@ -15,7 +15,7 @@ const uploadImage = (buffer) => {
       {
         folder: 'manila-sunrice/menu-items',
         use_filename: true,
-        unique_filename: false
+        unique_filename: true
       },
       (error, result) => {
         if (error) return reject(error);
